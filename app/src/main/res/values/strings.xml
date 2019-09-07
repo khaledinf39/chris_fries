@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">CHRIS FRIES</string>
+    <string name="save">حفظ</string>
+    <string name="name">الإسم :</string>
+    <string name="code">الرمز :</string>
+    <string name="phone">الهاتف :</string>
+    <string name="logout">تسجيل الخروج</string>
+    <string name="myOrders">طلباتي</string>
+    <string name="bay">شراء</string>
+    <string name="product">المنتج</string>
+    <string name="whight">الوزن</string>
+    <string name="order_nb">رقم الطلب</string>
+    <string name="order_date">تاريخ الطلب :</string>
+    <string name="order_count">الكمية المطلوبة</string>
+    <string name="order_talif">الكمية التالفة :</string>
+    <string name="welcome">مرحبا !</string>
+    <string name="order_details">قم بارسال تفاصيل طلبك</string>
+    <string name="cancel">إلغاء</string>
+    <string name="ur_req_succ">تم ارسال طلبك بنجاح</string>
+    <string name="execu">عذرا !</string>
+
+    <string name="delete">حذف</string>
+
+    <string name="delete_text">هل انت متأكد أنك تريد حذف هذا العنصر</string>
+    <string name="username">اسم المستخدم</string>
+    <string name="userAddsucc">تم انشاء الحساب بنجاح</string>
+    <string name="userAddfaild">حصل خطا نرجوا اعادة المحاولة لاحقا</string>
+    <string name="gps1">محدد GPS</string>
+    <string name="gps2">قم بفتح محدد الGPS من الاعدادات</string>
+    <string name="noItem">لا يوجد عناصر</string>
+    <string name="noAddress">لم يتم تحديد المكان بعد</string>
+</resources>
