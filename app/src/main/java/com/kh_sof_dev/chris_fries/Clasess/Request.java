@@ -5,8 +5,17 @@ public class Request {
     private String id,date,product;
 private Double weight,price,count,talif;
 private int type;
+private  String nb;
 
-    public Request( String date, String product, Double weight, Double price, Double count, Double talif) {
+    public String getNb() {
+        return nb;
+    }
+
+    public void setNb(String nb) {
+        this.nb = nb;
+    }
+
+    public Request(String date, String product, Double weight, Double price, Double count, Double talif) {
 
         this.date = date;
         this.product = product;

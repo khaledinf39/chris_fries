@@ -65,7 +65,7 @@ RecyclerView list;
         list=view.findViewById(R.id.request_list);
         requestList=new ArrayList<>();
         adapter=new Requestes_adapter(getContext(),requestList,null);
-        list.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+        list.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,true));
         list.setAdapter(adapter);
         fetch_data();
         return  view;

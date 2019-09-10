@@ -83,20 +83,41 @@ private TextView name,cod,phone,address;
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                finish();
+logoutFun();
             }
         });
         adapter=new Products_adapter(this ,productList, null);
         recyclerView=(RecyclerView) findViewById(R.id.List_prod);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,true));
         recyclerView.setAdapter(adapter);
         fesh_data();
 
         userInfo();
         update_location();
     }
-private void save_location(String Address){
+
+    private void logoutFun() {
+
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle(MainActivity.this.getString(R.string.logout))
+                .setMessage(MainActivity.this.getString(R.string.logouttext))
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                       finish();
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_menu_agenda)
+                .show();
+
+    }
+
+    private void save_location(String Address){
     SharedPreferences sp=getSharedPreferences("user_info", MODE_PRIVATE);
     SharedPreferences.Editor Ed=sp.edit();
     Ed.putString("address", String.valueOf(Address));
@@ -110,20 +131,28 @@ private users getUser_inf(){
     SharedPreferences sp=getSharedPreferences("user_info", MODE_PRIVATE);
     users user=new users();
     user.setName(sp.getString("name",getString(R.string.name)));
-    user.setAddress(sp.getString("address",getString(R.string.name)));
+    user.setAddress(sp.getString("address",getString(R.string.noAddress)));
+    user.setNb(sp.getString("nb","000001"));
+
     return user;
 }
     private void update_location() {
         GPSTracker gps = new GPSTracker(MainActivity.this);
+        if (!gps.displayGpsStatus()){
+            gps.showSettingsAlert();
+        }
         // check if GPS enabled
         if(gps.canGetLocation()){
             double latitude = gps.getLatitude();
             double longitude = gps.getLongitude();
             gps.stopUsingGPS();
             // \n is for new line
-//            Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
 getcityname(latitude,longitude);
-
+            DatabaseReference reference=FirebaseDatabase.getInstance().getReference("Users")
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            reference.child("Location").child("lat").setValue(latitude);
+            reference.child("Location").child("lng").setValue(longitude);
         }else{
             // can't get location
             // GPS or Network is not enabled
@@ -166,10 +195,11 @@ getcityname(latitude,longitude);
 FirebaseAuth auth=FirebaseAuth.getInstance();
 
         phone.setText(auth.getCurrentUser().getPhoneNumber());
-        cod.setText(auth.getCurrentUser().getUid());
+//        cod.setText(auth.getCurrentUser().getUid());
         users user=getUser_inf();
         name.setText(user.getName());
         address.setText(user.getAddress());
+        cod.setText(user.getNb());
 
 
     }

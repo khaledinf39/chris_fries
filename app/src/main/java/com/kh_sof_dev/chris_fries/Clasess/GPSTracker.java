@@ -1,17 +1,22 @@
 package com.kh_sof_dev.chris_fries.Clasess;
 
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Service;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
@@ -40,7 +45,7 @@ public class GPSTracker extends Service implements LocationListener {
         this.mContext = context;
         getLocation();
     }
-    @SuppressLint("MissingPermission")
+
     public Location getLocation() {
         try {
             locationManager = (LocationManager) mContext
@@ -57,6 +62,13 @@ public class GPSTracker extends Service implements LocationListener {
             } else {
                 this.canGetLocation = true;
                 if (isNetworkEnabled) {
+                    if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext
+                            , Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions((Activity) mContext,
+                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                        return null;
+                    }
                     locationManager.requestLocationUpdates(
                             LocationManager.NETWORK_PROVIDER,
                             MIN_TIME_BW_UPDATES,
@@ -126,6 +138,18 @@ public class GPSTracker extends Service implements LocationListener {
      * Function to check GPS/wifi enabled
      * @return boolean
      * */
+    public Boolean displayGpsStatus() {
+        ContentResolver contentResolver = mContext.getContentResolver();
+        boolean gpsStatus = Settings.Secure
+                .isLocationProviderEnabled(contentResolver,
+                        LocationManager.GPS_PROVIDER);
+        if (gpsStatus) {
+            return true;
+
+        } else {
+            return false;
+        }
+    }
     public boolean canGetLocation() {
         return this.canGetLocation;
     }
@@ -134,9 +158,9 @@ public class GPSTracker extends Service implements LocationListener {
      * On pressing Settings button will lauch Settings Options
      * */
     public void showSettingsAlert(){
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.gps1))
-                .setMessage(getString(R.string.gps2))
+        new AlertDialog.Builder(mContext)
+                .setTitle(mContext.getString(R.string.gps1))
+                .setMessage(mContext.getString(R.string.gps2))
 
                 // Specifying a listener allows you to take an action before dismissing the dialog.
                 // The dialog is automatically dismissed when a dialog button is clicked.
@@ -144,7 +168,7 @@ public class GPSTracker extends Service implements LocationListener {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent myIntent = new Intent(
                                 Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(myIntent);
+mContext.                        startActivity(myIntent);
                     }
                 })
 

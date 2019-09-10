@@ -3,6 +3,7 @@ package com.kh_sof_dev.chris_fries.Adapters;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,22 +16,39 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.kh_sof_dev.chris_fries.Clasess.Notifi;
 import com.kh_sof_dev.chris_fries.R;
 
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.kh_sof_dev.chris_fries.Clasess.Product;
 import com.kh_sof_dev.chris_fries.Clasess.Request;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class Products_adapter extends RecyclerView.Adapter<Products_adapter.ViewHolder> {
 
@@ -47,6 +65,7 @@ public class Products_adapter extends RecyclerView.Adapter<Products_adapter.View
     private DatabaseReference reference;
     private FirebaseAuth auth;
 private onEditeListenner mlistenner;
+private String token;
     public Products_adapter(Context context, List<Product> names, onEditeListenner listenner) {
         mItems = names;
         mContext = context;
@@ -54,6 +73,20 @@ private onEditeListenner mlistenner;
         database=FirebaseDatabase.getInstance();
         reference=database.getReference("Requests").child("Waite");
         auth=FirebaseAuth.getInstance();
+        DatabaseReference tokenref=database.getReference("Notification").child("Token");
+        tokenref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    token=dataSnapshot.getValue(String.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
     private View mView;
@@ -81,7 +114,7 @@ try {
 
 }
 try{
-        holder.price.setText(mItems.get(position).getPrice().toString() +" $");
+        holder.price.setText(mItems.get(position).getPrice().toString() +" EGP");
 }catch (Exception e){
 
 }
@@ -113,35 +146,142 @@ bay_popup(position);
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
-                double count_=Double.parseDouble(count.getText().toString());
-                double talif_=Double.parseDouble(talif.getText().toString());
-                if (count.getText().toString().isEmpty() || count_==0.0){
+
+
+
+
+
+                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd  HH:mm");
+                Date date = new Date();
+
+                Double cnt=0.0,tlf=0.0;
+
+                try {
+                    cnt=Double.parseDouble(count.getText().toString());
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+                try {
+                   tlf= Double.parseDouble(talif.getText().toString());
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                if (count.getText().toString().isEmpty()  || cnt==0.0 ){
                     count.setError(count.getHint());
                     return;
                 }
-                if (count.getText().toString().isEmpty() ){
+                if (talif.getText().toString().isEmpty() ){
                     talif.setError(talif.getHint());
                     return;
                 }
 
-
-
-                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-                Date date = new Date();
-
+Double priceTOT=mItems.get(position).getPrice()*cnt
+        -
+        mItems.get(position).getPrice()*tlf;
 
                 Request request=new Request(dateFormat.format(date)
-                        ,mItems.get(position).getName(),
+                        ,mItems.get(position).getName()+"( "+mItems.get(position).getWeight()+" KG )",
                         mItems.get(position).getWeight()
-                ,mItems.get(position).getPrice(),count_,talif_);
+                ,priceTOT,cnt,tlf);
+                 create_request(request);
 
-                reference.child(auth.getCurrentUser().getUid()).push().setValue(request);
-                Toast.makeText(mContext,mContext.getString(R.string.ur_req_succ),Toast.LENGTH_LONG).show();
+
                 dialog.dismiss();
             }
         });
     }
 
+    private void create_request(final Request request) {
+        FirebaseDatabase database=FirebaseDatabase.getInstance();
+        DatabaseReference reference_nb=database.getReference("App_number").child("requests_nb");
+        reference_nb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    int nb=dataSnapshot.getValue(int.class);
+                    add_newrequest(nb,request);
+                }else {
+                    add_newrequest(0,request);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void add_newrequest(int i, Request request) {
+        final DecimalFormat decimalFormat = new DecimalFormat("000000");
+request.setNb(decimalFormat.format(i+1));
+
+        reference.child(auth.getCurrentUser().getUid()).push().setValue(request);
+
+        FirebaseDatabase database=FirebaseDatabase.getInstance();
+        DatabaseReference reference_nb=database.getReference("App_number").child("requests_nb");
+        reference_nb.setValue(i+1);
+
+        Toast.makeText(mContext,mContext.getString(R.string.ur_req_succ),Toast.LENGTH_LONG).show();
+        try {
+            Post_notificition(request.getProduct());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void Post_notificition(String prodname) throws JSONException {
+        Notifi notifi_=new Notifi();
+        notifi_.setTitle(prodname);
+        notifi_.setBody(mContext.getSharedPreferences("user_info", MODE_PRIVATE).getString("name"," ")
+                +" "+mContext.getString(R.string.baypro));
+        notifi_.setToken(token);
+
+//                "evkGRG2M9Vg:APA91bEdTu1dStAC4swqle3qFIL10fSW7lfL5iUC_DQh0QpPl7hWkU_" +
+//                "7Eswhd0TtRjGfTnHTR1NPO77DZxWixP4QnvEMt73-fxUbIuB1OSO2Jfi31fB1Uc2JMlonodbPNtm7KRHl9-HV");
+
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        String url ="https://fcm.googleapis.com/fcm/send";
+
+        // POST parameters
+
+        JSONObject cart=notifi_.Notifi();
+
+        Log.d("results",cart.toString());
+// Request a json response from the provided URL
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                com.android.volley.Request.Method.POST, url, cart,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+                        Log.d("results",jsonObject.toString());
+                    }
+                }, new Response.ErrorListener (){
+
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }
+        ){
+            @Override
+            public Map<String, String> getHeaders()  {
+                Map<String, String>  Headers = new HashMap<String, String>();
+                Headers.put("Authorization",
+                        "key=AAAASHsVPrQ:APA91bFOMMlGcnoZl6ogWJ47tUONperJ8" +
+                                "5aAAOqncFGwKxPnpctiS1Um5FWl3STxzlAewSuX-tN0vzkDaFLxn2CVl2mTeonz" +
+                                "SMZHRyU_0LBGWlXUCCjH9151lN8zxtl3L0voMe0w1585");
+//
+
+                return Headers;
+            }
+        };
+        // Add the request to the RequestQueue.
+        queue.add(jsonObjectRequest);
+        // prepare the Request
+
+    }
     @Override
     public int getItemCount() {
         return mItems.size();

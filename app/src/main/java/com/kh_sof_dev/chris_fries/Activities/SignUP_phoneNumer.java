@@ -27,12 +27,16 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.kh_sof_dev.chris_fries.Clasess.users;
 import com.kh_sof_dev.chris_fries.R;
 
 
+import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -279,21 +283,58 @@ import java.util.concurrent.TimeUnit;
                 });
     }
 
-    private void createUserFun(FirebaseUser user_fire) {
+    private void createUserFun(final FirebaseUser user_fire) {
 
-        SharedPreferences sp=getSharedPreferences("user_info", MODE_PRIVATE);
-        SharedPreferences.Editor Ed=sp.edit();
-        Ed.putString("name", name.getText().toString());
-        Ed.commit();
-        users user=new users(name.getText().toString(),user_fire.getPhoneNumber());
+
         FirebaseDatabase database=FirebaseDatabase.getInstance();
-        DatabaseReference reference=database.getReference("Users").child(user_fire.getUid());
-        reference.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+       DatabaseReference reference_nb=database.getReference("App_number").child("users_nb");
+       reference_nb.addListenerForSingleValueEvent(new ValueEventListener() {
+           @Override
+           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               if (dataSnapshot.exists()){
+                   int nb=dataSnapshot.getValue(int.class);
+                   add_newUsers(nb,user_fire);
+               }else {
+                   add_newUsers(0,user_fire);
+               }
+           }
+
+           @Override
+           public void onCancelled(@NonNull DatabaseError databaseError) {
+
+           }
+       });
+    }
+
+    private void add_newUsers(final int i, FirebaseUser user_fire) {
+
+
+        final DecimalFormat decimalFormat = new DecimalFormat("000000");
+
+
+
+        final users user=new users(name.getText().toString(),user_fire.getPhoneNumber(),decimalFormat.format(i+1));
+
+        DatabaseReference reference=FirebaseDatabase.getInstance().getReference("Users");
+        reference.child(user_fire.getUid()).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()){
                     Toast.makeText(getApplicationContext(),getString(R.string.userAddsucc),Toast.LENGTH_LONG).show();
                     startActivity(new Intent(SignUP_phoneNumer.this,MainActivity.class));
+
+                    SharedPreferences sp=getSharedPreferences("user_info", MODE_PRIVATE);
+                    SharedPreferences.Editor Ed=sp.edit();
+                    Ed.putString("name", name.getText().toString());
+                    Ed.putString("nb", decimalFormat.format(i+1));
+                    Ed.commit();
+
+
+
+                    FirebaseDatabase database=FirebaseDatabase.getInstance();
+                    DatabaseReference reference_nb=database.getReference("App_number").child("users_nb");
+reference_nb.setValue(i+1);
+
                     finish();
                 }else {
                     Toast.makeText(getApplicationContext(),getString(R.string.userAddfaild),Toast.LENGTH_LONG).show();

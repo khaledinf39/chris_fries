@@ -16,7 +16,7 @@
     <string name="welcome">مرحبا !</string>
     <string name="order_details">قم بارسال تفاصيل طلبك</string>
     <string name="cancel">إلغاء</string>
-    <string name="ur_req_succ">تم ارسال طلبك بنجاح</string>
+    <string name="ur_req_succ">تم ارسال طلبك بنجاح نشكركم على ثقتكم بنا </string>
     <string name="execu">عذرا !</string>
 
     <string name="delete">حذف</string>
@@ -29,4 +29,6 @@
     <string name="gps2">قم بفتح محدد الGPS من الاعدادات</string>
     <string name="noItem">لا يوجد عناصر</string>
     <string name="noAddress">لم يتم تحديد المكان بعد</string>
+    <string name="baypro">تم ارسال طلب جديد من قبل</string>
+    <string name="logouttext">هل تريد تسجيل الخروج</string>
 </resources>

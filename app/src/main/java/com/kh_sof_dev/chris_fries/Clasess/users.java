@@ -2,10 +2,20 @@ package com.kh_sof_dev.chris_fries.Clasess;
 
 public class users {
     private  String name,phone,id,address;
+    private  String nb;
 
-    public users(String name, String phone) {
+    public String getNb() {
+        return nb;
+    }
+
+    public void setNb(String nb) {
+        this.nb = nb;
+    }
+
+    public users(String name, String phone, String nb) {
         this.name = name;
         this.phone = phone;
+        this.nb = nb;
     }
 
     public users() {
