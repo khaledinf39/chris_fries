@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.kh_sof_dev.chris_fries.Adapters.Products_adapter;
 import com.kh_sof_dev.chris_fries.Clasess.GPSTracker;
 import com.kh_sof_dev.chris_fries.Clasess.users;
@@ -106,6 +107,7 @@ logoutFun();
                 // The dialog is automatically dismissed when a dialog button is clicked.
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        FirebaseAuth.getInstance().signOut();
                        finish();
                     }
                 })
@@ -201,6 +203,10 @@ FirebaseAuth auth=FirebaseAuth.getInstance();
         address.setText(user.getAddress());
         cod.setText(user.getNb());
 
+        String token= FirebaseInstanceId.getInstance().getToken();
+        FirebaseDatabase database=FirebaseDatabase.getInstance();
+        DatabaseReference reference=database.getReference("Users").child(auth.getCurrentUser().getUid());
+        reference.child("token").setValue(token);
 
     }
 

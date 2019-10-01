@@ -44,7 +44,8 @@
         android:layout_marginTop="10dp"/>
 
     <EditText
-        android:inputType="number"
+
+        android:digits="1234567890."
         android:id="@+id/order_count"
         android:layout_width="200dp"
         android:gravity="right"
@@ -58,7 +59,8 @@
         android:textSize="24dp"
         android:textColor="#3F51B5"/>
     <EditText
-        android:inputType="number"
+
+        android:digits="1234567890."
         android:id="@+id/order_talif"
         android:layout_width="200dp"
         android:gravity="right"

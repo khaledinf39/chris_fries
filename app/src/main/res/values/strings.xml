@@ -31,4 +31,7 @@
     <string name="noAddress">لم يتم تحديد المكان بعد</string>
     <string name="baypro">تم ارسال طلب جديد من قبل</string>
     <string name="logouttext">هل تريد تسجيل الخروج</string>
+    <string name="notify_key">AAAAGjJll2I:APA91bFGcdDP_DcFTO_UldA38OvKxDKob537dhAIUHe80LQDUzlNWsoWc7xVUvInudFkWEJpRhz9O8CLR0NxLP7vkAb3xLPaKlqAiC-ag_aajkW9j_n6SmOgvC8SHE4fvvfuFh2Iq06G</string>
+    <string name="checkout_amount">المبلغ المستلم</string>
+    <string name="checkout_txt">استلام مبلغ من العميل</string>
 </resources>

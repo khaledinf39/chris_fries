@@ -224,13 +224,54 @@ request.setNb(decimalFormat.format(i+1));
         reference_nb.setValue(i+1);
 
         Toast.makeText(mContext,mContext.getString(R.string.ur_req_succ),Toast.LENGTH_LONG).show();
+        add_request();
+        add_wallet(request.getPrice());
         try {
             Post_notificition(request.getProduct());
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+private void add_request(){
+        final FirebaseDatabase database=FirebaseDatabase.getInstance();
+        final DatabaseReference reference=database.getReference("Users").child(auth.getCurrentUser().getUid());
+        reference.child("request_wail_nb").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    int nb=dataSnapshot.getValue(int.class)+1;
+                    reference.child("request_wail_nb").setValue(nb);
+                }else {
+                    reference.child("request_wail_nb").setValue(1);
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+}
+    private void add_wallet(final Double newPrice){
+        final FirebaseDatabase database=FirebaseDatabase.getInstance();
+        final DatabaseReference reference=database.getReference("Users").child(auth.getCurrentUser().getUid());
+        reference.child("wallet").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    Double wallet=dataSnapshot.getValue(Double.class)+newPrice;
+                    reference.child("wallet").setValue(wallet);
+                }else {
+                    reference.child("wallet").setValue(newPrice);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
     public void Post_notificition(String prodname) throws JSONException {
         Notifi notifi_=new Notifi();
         notifi_.setTitle(prodname);
@@ -238,8 +279,6 @@ request.setNb(decimalFormat.format(i+1));
                 +" "+mContext.getString(R.string.baypro));
         notifi_.setToken(token);
 
-//                "evkGRG2M9Vg:APA91bEdTu1dStAC4swqle3qFIL10fSW7lfL5iUC_DQh0QpPl7hWkU_" +
-//                "7Eswhd0TtRjGfTnHTR1NPO77DZxWixP4QnvEMt73-fxUbIuB1OSO2Jfi31fB1Uc2JMlonodbPNtm7KRHl9-HV");
 
         RequestQueue queue = Volley.newRequestQueue(mContext);
         String url ="https://fcm.googleapis.com/fcm/send";
@@ -269,9 +308,9 @@ request.setNb(decimalFormat.format(i+1));
             public Map<String, String> getHeaders()  {
                 Map<String, String>  Headers = new HashMap<String, String>();
                 Headers.put("Authorization",
-                        "key=AAAASHsVPrQ:APA91bFOMMlGcnoZl6ogWJ47tUONperJ8" +
-                                "5aAAOqncFGwKxPnpctiS1Um5FWl3STxzlAewSuX-tN0vzkDaFLxn2CVl2mTeonz" +
-                                "SMZHRyU_0LBGWlXUCCjH9151lN8zxtl3L0voMe0w1585");
+                        "key=" +
+                                mContext.getString(R.string.notify_key)
+                );
 //
 
                 return Headers;
