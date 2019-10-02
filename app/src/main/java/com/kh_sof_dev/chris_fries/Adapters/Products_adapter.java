@@ -184,6 +184,7 @@ Double priceTOT=mItems.get(position).getPrice()*cnt
                         ,mItems.get(position).getName()+"( "+mItems.get(position).getWeight()+" KG )",
                         mItems.get(position).getWeight()
                 ,priceTOT,cnt,tlf);
+                request.setProd_id(mItems.get(position).getId());
                  create_request(request);
 
 

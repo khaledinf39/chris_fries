@@ -2,7 +2,7 @@ package com.kh_sof_dev.chris_fries.Clasess;
 
 public class Request {
 
-    private String id,date,product;
+    private String id,date,product,prod_id;
 private Double weight,price,count,talif;
 private int type;
 private  String nb;
@@ -24,6 +24,14 @@ private  String nb;
         this.count = count;
         this.talif = talif;
 
+    }
+
+    public String getProd_id() {
+        return prod_id;
+    }
+
+    public void setProd_id(String prod_id) {
+        this.prod_id = prod_id;
     }
 
     public Double getCount() {
