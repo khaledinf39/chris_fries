@@ -7,7 +7,7 @@
         android:layout_margin="3dp"
         android:padding="10dp"
         android:layout_marginBottom="30dp"
-        android:background="@drawable/bk_prod"
+        android:background="@drawable/bk_prod2"
         android:id="@+id/cl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,10 +19,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/product"
+            android:textColor="@color/dark_mint"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:fontFamily="@font/saudi"/>
         <TextView
+            android:textColor="@color/dark_mint"
+
             android:id="@+id/prod_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,6 +35,8 @@
             app:layout_constraintTop_toTopOf="parent"
             android:fontFamily="@font/saudi"/>
         <TextView
+            android:textColor="@color/dark_mint"
+
             android:id="@+id/t2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,6 +45,8 @@
             app:layout_constraintTop_toBottomOf="@+id/t1"
             android:fontFamily="@font/saudi"/>
         <TextView
+            android:textColor="@color/dark_mint"
+
             android:id="@+id/wight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,6 +57,7 @@
             android:fontFamily="@font/saudi"/>
 
         <TextView
+
             android:id="@+id/price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

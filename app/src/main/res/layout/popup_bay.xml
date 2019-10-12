@@ -54,7 +54,7 @@
         app:layout_constraintTop_toBottomOf="@+id/t2"
         app:layout_constraintRight_toLeftOf="@+id/t3"
 
-        android:hint=" 100 KG"
+        android:hint=" 100 pcs"
         android:fontFamily="@font/saudi"
         android:textSize="24dp"
         android:textColor="#3F51B5"/>
@@ -69,7 +69,7 @@
         app:layout_constraintTop_toBottomOf="@+id/t3"
         app:layout_constraintRight_toLeftOf="@+id/t4"
 
-        android:hint=" 10 KG"
+        android:hint=" 10 pcs"
         android:fontFamily="@font/saudi"
         android:textSize="24dp"
         android:textColor="#E91E63"/>

@@ -109,7 +109,7 @@ try{
 
 }
 try {
-    holder.weight.setText(mItems.get(position).getWeight().toString() +" KG");
+    holder.weight.setText(mItems.get(position).getWeight().toString() +" pcs");
 }catch (Exception e){
 
 }
