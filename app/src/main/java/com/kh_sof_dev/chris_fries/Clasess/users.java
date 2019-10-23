@@ -5,6 +5,7 @@ public class users {
     private  String nb,token;
 private int request_wail_nb;
     private Double wallet;
+    private Long time_modify= Long.valueOf(0);
 
     public Double getWallet() {
         return wallet;

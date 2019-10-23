@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.Odrer_activity">
+    tools:context=".Activities.Odrer_activity"
+    android:background="@drawable/logo_back">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cl1"
@@ -12,8 +13,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:padding="10dp"
-        android:background="@color/logo_color">
+        android:padding="10dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,14 +41,14 @@
         app:layout_constraintRight_toRightOf="parent"
         android:id="@+id/tab"
         style="@style/Tablayout_order"
-        android:background="@color/logo_color"/>
+        android:background="#A4000000"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpage"
         android:layout_width="match_parent"
+        android:layout_marginBottom="5dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/tab"
-        app:layout_constraintRight_toRightOf="parent"></android.support.v4.view.ViewPager>
+        app:layout_constraintRight_toRightOf="parent"/>
 
-
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

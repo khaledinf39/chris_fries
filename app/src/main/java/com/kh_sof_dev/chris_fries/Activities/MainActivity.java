@@ -56,8 +56,10 @@ private TextView name,cod,phone,address;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                findViewById(R.id.progress).setVisibility(View.GONE);
-                findViewById(R.id.noItem).setVisibility(View.VISIBLE);
+               if(productList.size()==0){
+                   findViewById(R.id.progress).setVisibility(View.GONE);
+                   findViewById(R.id.noItem).setVisibility(View.VISIBLE);
+               }
 
 
             }
@@ -65,6 +67,7 @@ private TextView name,cod,phone,address;
 
         database=FirebaseDatabase.getInstance();
         reference=database.getReference();
+        ChechStutus();
         productList=new ArrayList<>();
         my_order=findViewById(R.id.myOrders);
         logout=findViewById(R.id.logout);
@@ -95,6 +98,43 @@ logoutFun();
 
         userInfo();
         update_location();
+    }
+
+    private void ChechStutus() {
+        reference.child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("status")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                       if (dataSnapshot.exists()){
+                           if (dataSnapshot.getValue(int.class)==0){
+                               new AlertDialog.Builder(MainActivity.this)
+                                       .setTitle(MainActivity.this.getString(R.string.logout))
+                                       .setMessage(MainActivity.this.getString(R.string.comptblock))
+
+                                       // Specifying a listener allows you to take an action before dismissing the dialog.
+                                       // The dialog is automatically dismissed when a dialog button is clicked.
+                                       .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                           public void onClick(DialogInterface dialog, int which) {
+                                               FirebaseAuth.getInstance().signOut();
+                                               finish();
+                                           }
+                                       })
+
+                                       // A null listener allows the button to dismiss the dialog and take no further action.
+
+                                       .setIcon(android.R.drawable.ic_menu_agenda)
+                                       .show();
+
+                           }
+                       }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
     }
 
     private void logoutFun() {
@@ -216,6 +256,8 @@ FirebaseAuth auth=FirebaseAuth.getInstance();
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (productList.size()==0){
                     findViewById(R.id.progress).setVisibility(View.GONE);
+                    findViewById(R.id.noItem).setVisibility(View.GONE);
+
                 }
                 Product product=dataSnapshot.getValue(Product.class);
                 product.setId(dataSnapshot.getKey());

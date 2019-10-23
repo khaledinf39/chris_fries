@@ -109,7 +109,7 @@ try{
 
 }
 try {
-    holder.weight.setText(mItems.get(position).getWeight().toString() +" pcs");
+    holder.weight.setText(mItems.get(position).getWeight().toString() +" kg");
 }catch (Exception e){
 
 }
@@ -226,7 +226,7 @@ request.setNb(decimalFormat.format(i+1));
 
         Toast.makeText(mContext,mContext.getString(R.string.ur_req_succ),Toast.LENGTH_LONG).show();
         add_request();
-        add_wallet(request.getPrice());
+//        add_wallet(request.getPrice());
         try {
             Post_notificition(request.getProduct());
         } catch (JSONException e) {
@@ -236,6 +236,8 @@ request.setNb(decimalFormat.format(i+1));
 private void add_request(){
         final FirebaseDatabase database=FirebaseDatabase.getInstance();
         final DatabaseReference reference=database.getReference("Users").child(auth.getCurrentUser().getUid());
+    long millis = System.currentTimeMillis();
+        reference.child("time_modify").setValue(millis);
         reference.child("request_wail_nb").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -253,26 +255,7 @@ private void add_request(){
             }
         });
 }
-    private void add_wallet(final Double newPrice){
-        final FirebaseDatabase database=FirebaseDatabase.getInstance();
-        final DatabaseReference reference=database.getReference("Users").child(auth.getCurrentUser().getUid());
-        reference.child("wallet").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
-                    Double wallet=dataSnapshot.getValue(Double.class)+newPrice;
-                    reference.child("wallet").setValue(wallet);
-                }else {
-                    reference.child("wallet").setValue(newPrice);
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
     public void Post_notificition(String prodname) throws JSONException {
         Notifi notifi_=new Notifi();
         notifi_.setTitle(prodname);

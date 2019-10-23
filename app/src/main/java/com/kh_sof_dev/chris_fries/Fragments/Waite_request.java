@@ -51,10 +51,10 @@ RecyclerView list;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-
-                progressBar.setVisibility(View.GONE);
-                view.findViewById(R.id.noItem).setVisibility(View.VISIBLE);
-
+                if(requestList.size()==0){
+                    progressBar.setVisibility(View.GONE);
+                    view.findViewById(R.id.noItem).setVisibility(View.VISIBLE);
+                }
 
             }
         }, 5000);

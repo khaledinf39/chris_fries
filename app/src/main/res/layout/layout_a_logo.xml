@@ -7,7 +7,6 @@
     android:gravity="center"
     android:orientation="vertical"
     android:weightSum="100"
-    android:background="@color/dark_mint"
     tools:context=".Activities.LogoAct">
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,9 +16,8 @@
         android:weightSum="100"
         android:gravity="center">
         <ImageView
-            android:src="@drawable/logo"
+            android:src="@drawable/logo_back"
         android:scaleType="centerCrop"
-            android:padding="100dp"
             android:layout_width="match_parent"
 
             android:layout_height="match_parent"

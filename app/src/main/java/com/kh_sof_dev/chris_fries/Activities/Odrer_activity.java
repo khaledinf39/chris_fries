@@ -89,7 +89,7 @@ cancel_btn.setOnClickListener(new View.OnClickListener() {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab);
 //        tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#56ce8b"));
         tabLayout.setSelectedTabIndicatorHeight((int) (4 * getResources().getDisplayMetrics().density));
-        tabLayout.setTabTextColors(Color.parseColor("#ffffff"), Color.parseColor("#011401"));
+        tabLayout.setTabTextColors(Color.parseColor("#ffffff"), Color.parseColor("#ffffff"));
 
         tabLayout.setupWithViewPager(mViewPager);
 //
