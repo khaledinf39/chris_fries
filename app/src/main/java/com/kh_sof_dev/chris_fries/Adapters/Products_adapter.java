@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -129,7 +130,7 @@ bay_popup(position);
     }
 
     private void bay_popup(final int position) {
-        final Dialog dialog=new Dialog(mContext);
+        final BottomSheetDialog dialog=new BottomSheetDialog(mContext);
         dialog.setContentView(R.layout.popup_bay);
         final EditText count=dialog.findViewById(R.id.order_count);
         final EditText talif=dialog.findViewById(R.id.order_talif);
